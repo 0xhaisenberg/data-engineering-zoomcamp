@@ -12,6 +12,13 @@ variable "region" {
   type = string
 }
 
+# Not needed for now
+variable "bucket_name" {
+  description = "Storage class type for your bucket. Check official docs for more info."
+  default = "STANDARD"
+}
+
+
 variable "storage_class" {
   description = "Storage class type for your bucket. Check official docs for more info."
   default = "STANDARD"
