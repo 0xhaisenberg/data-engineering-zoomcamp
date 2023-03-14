@@ -18,9 +18,9 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 
     df['tpep_pickup_datetime'] = pd.to_datetime(df['tpep_pickup_datetime'])
     df['tpep_dropoff_datetime'] = pd.to_datetime(df['tpep_dropoff_datetime'])
-    #print(df.head(5))
-    #print(f'columns: {df.dtypes}')
-    #print(f'rows: {len(df)}')
+    print(df.head(5))
+    print(f'columns: {df.dtypes}')
+    print(f'rows: {len(df)}')
     return df
 
 @task()
