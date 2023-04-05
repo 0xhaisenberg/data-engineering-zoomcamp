@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
-
+from prefect.filesystems import GitHub
 
 @task(log_prints=True, retries=3)
 def fetch(dataset_url: str) -> pd.DataFrame:
@@ -24,13 +24,13 @@ def write_local(df: pd.DataFrame, color: str, dataset_file: str) -> Path:
 @task(log_prints=True)
 def write_gcs(path: Path) -> None:
     """Upload local parquet file to GCS"""
-    gcp_cloud_storage_bucket_block = GcsBucket.load("data-zoomcamp-gcs")
+    gcp_cloud_storage_bucket_block = GcsBucket.load("zoomcamp-gcs")
     gcp_cloud_storage_bucket_block.upload_from_path(from_path=path, to_path=path)
     return
 
 
 @flow()
-def el_web_to_gcs() -> None:
+def etl_web_to_gcs() -> None:
     ''''This is the main Extract & Load function'''
 
     color = "green"
@@ -44,4 +44,4 @@ def el_web_to_gcs() -> None:
     write_gcs(path)
 
 if __name__ == '__main__':
-    el_web_to_gcs()
+    etl_web_to_gcs()
