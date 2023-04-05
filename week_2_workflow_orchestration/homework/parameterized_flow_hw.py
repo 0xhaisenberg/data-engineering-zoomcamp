@@ -9,7 +9,7 @@ from prefect.tasks import task_input_hash
 @task(retries=3)
 def fetch(dataset_url: str) -> pd.DataFrame:
     """Read taxi data from web into pandas DataFrame"""
-    df = pd.read_csv(dataset_url)
+    df = pd.read_csv(dataset_url, low_memory=False)
     return df
 
 @task(log_prints=True)
@@ -18,6 +18,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 
     df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
     df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
+
     print(df.head(5))
     print(f'columns: {df.dtypes}')
     print(f'rows: {len(df)}')
@@ -37,7 +38,7 @@ def write_local(df: pd.DataFrame, color: str, dataset_file: str) -> Path:
 def write_gcs(path: Path) -> None:
     """Upload local parquet file to GCS"""
 
-    gcp_cloud_storage_bucket_block = GcsBucket.load("data-zoomcamp-gcs")
+    gcp_cloud_storage_bucket_block = GcsBucket.load("zoomcamp-gcs")
     gcp_cloud_storage_bucket_block.upload_from_path(from_path=path, to_path=path)
 
 @flow()
@@ -58,7 +59,7 @@ def etl_parent_flow(months: list[int] = [1, 2], year: int = 2021, color: str = '
         etl_web_to_gcs(year, month, color)
 
 if __name__ == '__main__':
-    color = 'green'
-    months = [1, 2, 3]
+    color = 'yellow'
+    months = [2, 3]
     year = 2021
     etl_parent_flow(months, year, color)
